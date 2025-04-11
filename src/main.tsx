@@ -9,6 +9,9 @@ import "./index.css";
 //context
 import { AuthProvider } from "./context/authContext.tsx";
 
+//components
+import ProtectedRoutes from "./components/ProtectedRoutes.tsx";
+
 //pages
 import App from "./App.tsx";
 import CharacterSingle from "./pages/characterSingle/CharacterSingle.tsx";
@@ -27,20 +30,25 @@ const router = createBrowserRouter([
     element: <SignUp />,
   },
   {
-    path: "/characters",
-    element: <Characters />,
-  },
-  {
-    path: "/characterSingle",
-    element: <CharacterSingle />,
-  },
-  {
-    path: "/location",
-    element: <Location />,
-  },
-  {
-    path: "/episode",
-    element: <Episode />,
+    element: <ProtectedRoutes />,
+    children: [
+      {
+        path: "/characters",
+        element: <Characters />,
+      },
+      {
+        path: "/characterSingle",
+        element: <CharacterSingle />,
+      },
+      {
+        path: "/location",
+        element: <Location />,
+      },
+      {
+        path: "/episode",
+        element: <Episode />,
+      },
+    ],
   },
 ]);
 const queryClient = new QueryClient();
