@@ -6,6 +6,9 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 //css
 import "./index.css";
 
+//context
+import { AuthProvider } from "./context/authContext.tsx";
+
 //pages
 import App from "./App.tsx";
 import CharacterSingle from "./pages/characterSingle/CharacterSingle.tsx";
@@ -44,7 +47,9 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </QueryClientProvider>
   </StrictMode>
 );
