@@ -20,7 +20,7 @@ export default forwardRef<HTMLButtonElement, ComponentProps<"button"> & Props>(
     let style = `bg-blue-500 text-white rounded-sm py-2 px-12 text-wrap `;
     switch (variant) {
       case "content":
-        style = `bg-blue-500 text-white rounded-sm py-2 px-0 text-wrap`;
+        style = `bg-transparenttext-blue-600 rounded-sm px-0 text-wrap`;
         break;
       case "small":
         style = `bg-blue-500 text-white rounded-sm py-2 px-8 text-wrap`;
