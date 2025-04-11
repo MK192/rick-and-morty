@@ -1,20 +1,28 @@
 import { FormEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { auth } from "../../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 //components
 import Button from "../Buttons/Button";
 import TextInput from "../TextInput";
 
-//hooks
-import { useLogin } from "../../hooks/useLogin";
-
 //utils
 import { getErrorMessage } from "../../utils/functions";
+
+type LoginInput = { email: string; password: string };
 
 export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { mutate, isPending, error } = useLogin();
+
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: async ({ email, password }: LoginInput) => {
+      await signInWithEmailAndPassword(auth, email, password);
+    },
+  });
+
   const navigate = useNavigate();
   const token = localStorage.getItem("fireToken");
 
@@ -23,8 +31,7 @@ export default function LoginForm() {
     mutate(
       { email, password },
       {
-        onSuccess: ({ token }) => {
-          localStorage.setItem("fireToken", token);
+        onSuccess: () => {
           navigate("/characters");
         },
       }
@@ -32,7 +39,7 @@ export default function LoginForm() {
   };
   return (
     <form
-      className="flex flex-col gap-6 text-start shadow-[0px_5px_6px_1px_rgba(34,_197,_94,_0.5)] p-6"
+      className="flex flex-col gap-6 min-h-64 text-start shadow-[0px_3px_4px_0px_rgba(0,_0,_0,_0.3)] p-6"
       onSubmit={handleSubmit}
     >
       <TextInput labelText="Email" type="email" setFunction={setEmail} />
