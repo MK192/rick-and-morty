@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 //css
 import "./index.css";
@@ -11,13 +12,17 @@ import CharacterSingle from "./pages/characterSingle/CharacterSingle.tsx";
 import Characters from "./pages/characters/Characters.tsx";
 import Location from "./pages/location/Location.tsx";
 import Episode from "./pages/episode/Episode.tsx";
+import SignUp from "./pages/signUp/SignUp.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
   },
-
+  {
+    path: "/signUp",
+    element: <SignUp />,
+  },
   {
     path: "/characters",
     element: <Characters />,
@@ -35,9 +40,11 @@ const router = createBrowserRouter([
     element: <Episode />,
   },
 ]);
-
+const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </StrictMode>
 );
