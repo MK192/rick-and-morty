@@ -1,3 +1,10 @@
+//components
+import LoginForm from "../../components/Forms/LoginForm";
+
 export default function Home() {
-  return <div>Home</div>;
+  return (
+    <div>
+      <LoginForm />
+    </div>
+  );
 }
