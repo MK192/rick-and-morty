@@ -1,5 +1,6 @@
 import { FirebaseError } from "firebase/app";
 
+// function for handling firebase error message
 export const getErrorMessage = (error: unknown) => {
   if (error instanceof FirebaseError) {
     switch (error.code) {
