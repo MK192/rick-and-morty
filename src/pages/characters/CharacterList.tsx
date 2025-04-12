@@ -8,7 +8,14 @@ import CharacterCard from "./CharacterCard";
 //request
 import { getCharacters } from "../../requests/request";
 
-export default function CharacterList() {
+//hooks
+import useDebounce from "../../hooks/useDebounce";
+
+type Props = {
+  nameFilter: string;
+};
+export default function CharacterList({ nameFilter }: Props) {
+  const debouncedFilter = useDebounce(nameFilter, 500);
   const {
     data,
     fetchNextPage,
@@ -17,9 +24,9 @@ export default function CharacterList() {
     status,
     error,
   } = useInfiniteQuery({
-    queryKey: ["characters"],
-    queryFn: getCharacters,
-    initialPageParam: 0,
+    queryKey: ["characters", debouncedFilter],
+    queryFn: ({ pageParam = 1 }) => getCharacters({ pageParam, nameFilter }),
+    initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (!lastPage.info.next) return undefined;
       const params = new URL(lastPage.info.next).searchParams;
@@ -61,7 +68,6 @@ export default function CharacterList() {
           ))
         )}
       </div>
-
       <div
         ref={loaderRef}
         className="h-10 mt-10 flex justify-center items-center"

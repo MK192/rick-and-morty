@@ -10,7 +10,7 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   return (
-    <header className="bg-green-300 text-blue-500 text-xl border-b-4 border-blue-500">
+    <header className="sticky text-base sm:text-lg top-0 bg-green-300 text-blue-500  border-b-4 border-blue-500 md:text-xl">
       <nav
         className="flex justify-between items-center  p-6 
 "

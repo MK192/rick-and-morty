@@ -17,19 +17,19 @@ export default forwardRef<HTMLButtonElement, ComponentProps<"button"> & Props>(
     }: Props,
     ref
   ) {
-    let style = `bg-blue-500 text-white rounded-sm py-2 px-12 text-wrap `;
+    let style = `bg-blue-500 text-white rounded-sm py-2 px-12 cursor-pointer text-wrap `;
     switch (variant) {
       case "content":
-        style = `bg-transparenttext-blue-600 rounded-sm px-0 text-wrap`;
+        style = `bg-transparenttext-blue-600 rounded-sm px-0 cursor-pointer text-wrap`;
         break;
       case "small":
-        style = `bg-blue-500 text-white rounded-sm py-2 px-8 text-wrap`;
+        style = `bg-blue-500 text-white rounded-sm py-2 px-8 cursor-pointer text-wrap`;
         break;
       case "large":
-        style = `bg-blue-500text-white rounded-sm py-2 px-20  text-wrap`;
+        style = `bg-blue-500text-white rounded-sm py-2 px-20 cursor-pointer text-wrap`;
         break;
       default:
-        style = `bg-blue-500 text-white rounded-sm py-2 px-12 text-wrap `;
+        style = `bg-blue-500 text-white rounded-sm py-2 px-12 cursor-pointer text-wrap `;
     }
     return (
       <button
