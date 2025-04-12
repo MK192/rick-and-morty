@@ -1,5 +1,5 @@
 //type
-import { Character } from "../../types/types";
+import { Character } from "../types/types";
 
 type Props = {
   character: Character;
