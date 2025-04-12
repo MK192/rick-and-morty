@@ -45,11 +45,11 @@ const router = createBrowserRouter([
             element: <CharacterSingle />,
           },
           {
-            path: "/location",
+            path: "/location/:id",
             element: <Location />,
           },
           {
-            path: "/episode",
+            path: "/episode/:id",
             element: <Episode />,
           },
         ],
