@@ -8,6 +8,9 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import Button from "../Buttons/Button";
 import TextInput from "../TextInput";
 
+//hooks
+import { useAuth } from "../../hooks/useAuth";
+
 //utils
 import { getErrorMessage } from "../../utils/functions";
 
@@ -16,6 +19,7 @@ type LoginInput = { email: string; password: string };
 export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { user } = useAuth();
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: async ({ email, password }: LoginInput) => {
@@ -24,7 +28,6 @@ export default function LoginForm() {
   });
 
   const navigate = useNavigate();
-  const token = localStorage.getItem("fireToken");
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -51,7 +54,7 @@ export default function LoginForm() {
       <Button type="submit">Login</Button>
       {error ? <p className="text-red-500">{getErrorMessage(error)}</p> : null}
       {isPending ? <p>Sending Data</p> : null}
-      {token ? null : (
+      {user ? null : (
         <Link to="/signUp" className="text-blue-700 text-xl hover:underline">
           Sign Up
         </Link>
