@@ -1,21 +1,19 @@
 import { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 //components
 import CharacterCard from "../../components/CharacterCard";
 
 //request
-import { getCharacters } from "../../requests/request";
-
-//hooks
-import useDebounce from "../../hooks/useDebounce";
+import { getResidents } from "../../requests/request";
 
 type Props = {
-  nameFilter: string;
+  characterIds: string[];
 };
-export default function CharacterList({ nameFilter }: Props) {
-  const debouncedFilter = useDebounce(nameFilter, 500);
+
+export default function ResidentList({ characterIds }: Props) {
+  const BATCH_SIZE = 10;
   const {
     data,
     fetchNextPage,
@@ -24,15 +22,30 @@ export default function CharacterList({ nameFilter }: Props) {
     status,
     error,
   } = useInfiniteQuery({
-    queryKey: ["characters", debouncedFilter],
-    queryFn: ({ pageParam = 1 }) => getCharacters({ pageParam, nameFilter }),
-    initialPageParam: 1,
+    queryKey: ["residents", characterIds],
+
+    queryFn: async ({ pageParam = 0 }) => {
+      const start = pageParam * BATCH_SIZE;
+      const end = start + BATCH_SIZE;
+      const batch = characterIds.slice(start, end);
+
+      if (batch.length === 0) {
+        return { characters: [], nextPage: undefined };
+      }
+
+      const characters = await getResidents(batch);
+      return {
+        characters,
+        nextPage: pageParam + 1,
+      };
+    },
+    initialPageParam: 0,
     getNextPageParam: (lastPage) => {
-      if (!lastPage.info.next) return undefined;
-      const params = new URL(lastPage.info.next).searchParams;
-      return Number(params.get("page"));
+      return lastPage.nextPage;
     },
   });
+
+  const characters = data?.pages.flatMap((page) => page.characters) ?? [];
 
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
@@ -58,21 +71,21 @@ export default function CharacterList({ nameFilter }: Props) {
   if (status === "error") return <p>Error: {(error as Error).message}</p>;
 
   return (
-    <div className="p-4">
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        {data?.pages.map((page) =>
-          page.results.map((character) => (
+    <div>
+      <div className="p-4">
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          {characters?.map((character) => (
             <Link key={character.id} to={`/character-single/${character.id}`}>
               <CharacterCard character={character} />
             </Link>
-          ))
-        )}
-      </div>
-      <div
-        ref={loaderRef}
-        className="h-10 mt-10 flex justify-center items-center"
-      >
-        {isFetchingNextPage && <p>Loading more...</p>}
+          ))}
+        </div>
+        <div
+          ref={loaderRef}
+          className="h-10 mt-10 flex justify-center items-center"
+        >
+          {isFetchingNextPage && <p>Loading more...</p>}
+        </div>
       </div>
     </div>
   );

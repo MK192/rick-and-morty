@@ -22,8 +22,9 @@ export default function CharacterSingle() {
     refetchOnMount: false,
     staleTime: Infinity,
   });
+  const locationId = character?.location.url.split("/").pop() as string;
 
-  if (isPending) return <p>Loading...</p>;
+  if (isPending) return <p>Loading Character...</p>;
   if (error) return <p className="text-red-500">{error.message}</p>;
 
   return (
@@ -53,7 +54,7 @@ export default function CharacterSingle() {
             <span className="font-medium">Origin: </span>
             {character?.origin.name}
           </p>
-          <Link to={`/location/${character.location.name}`}>
+          <Link to={`/location/${locationId}`}>
             <p className="w-full truncate text-start text-blue-500">
               <span className="font-medium">Location: </span>
               {character?.location.name}
@@ -65,7 +66,7 @@ export default function CharacterSingle() {
           </p>
         </div>
         <h2 className="font-bold text-xl">Episode List</h2>
-        <EpisodeList episodeList={character.episode} />
+        <EpisodeList episodeList={character?.episode} />
       </div>
     </div>
   );
