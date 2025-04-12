@@ -14,9 +14,10 @@ type APIResponse = {
 
 export const getCharacters = async ({
   pageParam = 1,
+  nameFilter = "",
 }): Promise<APIResponse> => {
   const res = await axios.get(
-    `https://rickandmortyapi.com/api/character?page=${pageParam}`
+    `https://rickandmortyapi.com/api/character?page=${pageParam}&name=${nameFilter}`
   );
 
   return res.data;

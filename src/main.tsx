@@ -23,16 +23,16 @@ import SignUp from "./pages/signUp/SignUp.tsx";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App />,
-  },
-  {
-    path: "/signUp",
-    element: <SignUp />,
-  },
-  {
     element: <Layout />,
     children: [
+      {
+        path: "/",
+        element: <App />,
+      },
+      {
+        path: "/signUp",
+        element: <SignUp />,
+      },
       {
         element: <ProtectedRoutes />,
         children: [
