@@ -15,13 +15,14 @@ export default function Location() {
     isPending,
     error,
   } = useQuery({
-    queryKey: [id],
+    queryKey: ["location", id],
     queryFn: () => getSingleLocation(id),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    staleTime: Infinity,
+    refetchInterval: Infinity,
   });
-  const residentIds = location?.residents.map(
+
+  const residentIds = location?.residents?.map(
     (resident: string) => resident.split("/").pop() as string
   );
 
