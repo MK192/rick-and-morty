@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import CharacterCard from "../../components/CharacterCard";
 
 //request
-import { getResidents } from "../../requests/request";
+import { getMultipleCharacters } from "../../requests/request";
 
 type Props = {
   characterIds: string[];
@@ -27,13 +27,13 @@ export default function ResidentList({ characterIds }: Props) {
     queryFn: async ({ pageParam = 0 }) => {
       const start = pageParam * BATCH_SIZE;
       const end = start + BATCH_SIZE;
-      const batch = characterIds.slice(start, end);
+      const batch = characterIds?.slice(start, end);
 
-      if (batch.length === 0) {
+      if (batch?.length === 0) {
         return { characters: [], nextPage: undefined };
       }
 
-      const characters = await getResidents(batch);
+      const characters = await getMultipleCharacters(batch);
       return {
         characters,
         nextPage: pageParam + 1,
@@ -71,11 +71,11 @@ export default function ResidentList({ characterIds }: Props) {
   if (status === "error") return <p>Error: {(error as Error).message}</p>;
 
   return (
-    <div>
+    <>
       <div className="p-4">
         <div className="flex flex-wrap items-center justify-center gap-4">
           {characters?.map((character) => (
-            <Link key={character.id} to={`/character-single/${character.id}`}>
+            <Link key={character.id} to={`/characters/${character.id}`}>
               <CharacterCard character={character} />
             </Link>
           ))}
@@ -87,6 +87,6 @@ export default function ResidentList({ characterIds }: Props) {
           {isFetchingNextPage && <p>Loading more...</p>}
         </div>
       </div>
-    </div>
+    </>
   );
 }
