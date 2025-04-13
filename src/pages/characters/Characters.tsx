@@ -10,14 +10,15 @@ export default function Characters() {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNameFilter(e.target.value);
   };
+
   return (
-    <div>
+    <>
       <FilterInput
         placeholder="Filter Characters..."
         value={nameFilter}
         onChangeHandler={handleSearch}
       />
       <CharacterList nameFilter={nameFilter} />
-    </div>
+    </>
   );
 }

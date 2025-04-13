@@ -1,21 +1,19 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Link } from "react-router";
 
 //components
 import CharacterCard from "../../components/CharacterCard";
 
 //request
-import { getCharacters } from "../../requests/request";
-
-//hooks
-import useDebounce from "../../hooks/useDebounce";
+import { getMultipleCharacters } from "../../requests/request";
 
 type Props = {
-  nameFilter: string;
+  characterIds: string[];
 };
-export default function CharacterList({ nameFilter }: Props) {
-  const debouncedFilter = useDebounce(nameFilter, 500);
+
+export default function EpisodeCharacterList({ characterIds }: Props) {
+  const BATCH_SIZE = 10;
   const {
     data,
     fetchNextPage,
@@ -24,17 +22,33 @@ export default function CharacterList({ nameFilter }: Props) {
     status,
     error,
   } = useInfiniteQuery({
-    queryKey: ["characters", debouncedFilter],
-    queryFn: ({ pageParam = 0 }) => getCharacters({ pageParam, nameFilter }),
+    queryKey: ["episode-appears", characterIds],
+
+    queryFn: async ({ pageParam = 0 }) => {
+      const start = pageParam * BATCH_SIZE;
+      const end = start + BATCH_SIZE;
+      const batch = characterIds?.slice(start, end);
+
+      if (batch?.length === 0) {
+        return { characters: [], nextPage: undefined };
+      }
+
+      const characters = await getMultipleCharacters(batch);
+      return {
+        characters,
+        nextPage: pageParam + 1,
+      };
+    },
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
-      if (!lastPage.info.next) return undefined;
-      const params = new URL(lastPage.info.next).searchParams;
-      return Number(params.get("page"));
+      return lastPage.nextPage;
     },
   });
 
+  const characters = data?.pages.flatMap((page) => page.characters) ?? [];
+
   const loaderRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -57,22 +71,22 @@ export default function CharacterList({ nameFilter }: Props) {
   if (status === "error") return <p>Error: {(error as Error).message}</p>;
 
   return (
-    <div className="p-4">
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        {data?.pages.map((page) =>
-          page.results.map((character) => (
+    <>
+      <div className="p-4">
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          {characters?.map((character) => (
             <Link key={character.id} to={`/characters/${character.id}`}>
               <CharacterCard character={character} />
             </Link>
-          ))
-        )}
+          ))}
+        </div>
+        <div
+          ref={loaderRef}
+          className="h-10 mt-10 flex justify-center items-center"
+        >
+          {isFetchingNextPage && <p>Loading more...</p>}
+        </div>
       </div>
-      <div
-        ref={loaderRef}
-        className="h-10 mt-10 flex justify-center items-center"
-      >
-        {isFetchingNextPage && <p>Loading more...</p>}
-      </div>
-    </div>
+    </>
   );
 }

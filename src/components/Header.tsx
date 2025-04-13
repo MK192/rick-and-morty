@@ -11,10 +11,7 @@ export default function Header() {
 
   return (
     <header className="sticky text-base sm:text-lg top-0 bg-green-300 text-blue-500  border-b-4 border-blue-500 md:text-xl">
-      <nav
-        className="flex justify-between items-center  p-6 
-"
-      >
+      <nav className="flex justify-between items-center p-6">
         <div>
           <Link to="/">Rick And Morty</Link>
         </div>

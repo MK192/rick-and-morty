@@ -16,13 +16,13 @@ export default function CharacterSingle() {
     isPending,
     error,
   } = useQuery({
-    queryKey: [id],
+    queryKey: ["character", id],
     queryFn: () => getSingleCharacter(id),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: Infinity,
   });
-  const locationId = character?.location.url.split("/").pop() as string;
+  const locationId = character?.location?.url?.split("/").pop() as string;
 
   if (isPending) return <p>Loading Character...</p>;
   if (error) return <p className="text-red-500">{error.message}</p>;
@@ -52,14 +52,21 @@ export default function CharacterSingle() {
           </p>
           <p className="w-full truncate text-start">
             <span className="font-medium">Origin: </span>
-            {character?.origin.name}
+            {character?.origin?.name}
           </p>
-          <Link to={`/location/${locationId}`}>
+          {character?.location?.url.length > 0 ? (
+            <Link to={`/location/${locationId}`}>
+              <p className="w-full truncate text-start text-blue-500">
+                <span className="font-medium">Location: </span>
+                {character?.location?.name}
+              </p>
+            </Link>
+          ) : (
             <p className="w-full truncate text-start text-blue-500">
               <span className="font-medium">Location: </span>
-              {character?.location.name}
+              {character?.location?.name}
             </p>
-          </Link>
+          )}
           <p className="w-full truncate text-start">
             <span className="font-medium">Status: </span>
             {character?.status}

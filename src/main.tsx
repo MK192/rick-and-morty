@@ -41,7 +41,7 @@ const router = createBrowserRouter([
             element: <Characters />,
           },
           {
-            path: "/character-single/:id",
+            path: "/characters/:id",
             element: <CharacterSingle />,
           },
           {
